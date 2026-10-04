@@ -20,9 +20,10 @@ def execute_bash_command(command: str) -> str:
     Args:
         command -> str
         """
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+
     spinner.stop()
     print("Using bash command: ")
+    result = subprocess.run(command, cwd="/home/ferdinand", shell=True, capture_output=True, text=True)
     try:
         print_formatted_text(HTML(f'<violet>{str(command)}</violet>'))
         print_formatted_text(HTML(f'<seagreen>{str(result.stdout.strip())}</seagreen>'))
