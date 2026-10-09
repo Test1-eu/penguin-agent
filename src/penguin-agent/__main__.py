@@ -1,5 +1,7 @@
+import time
+
 from ollama import Client
-import animation
+from dotenv import load_dotenv
 from prompt_toolkit import print_formatted_text
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.formatted_text import *
@@ -8,11 +10,28 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.styles import Style
 from ghostprint import typewrite
+import animation
 import subprocess
 import json
 import datetime
 import os
-ollamaclient = Client(host="http://192.168.2.127:11434")
+
+
+load_dotenv()
+print(os.getenv('OLLAMA_BASE_URL'))
+
+if os.getenv('OLLAMA_BASE_URL') == None:
+    print('No OLLAMA_BASE_URL found.')
+    baseurl = input('Please enter your ollama base URL: ')
+    with open('.env', 'w') as file:
+        file.write('OLLAMA_BASE_URL=' + baseurl)
+    load_dotenv()
+
+ollamaclient = Client(host=os.getenv('OLLAMA_BASE_URL'))
+
+
+
+
 spinner = animation.Wait('spinner', text='penguin is working')
 
 def execute_bash_command(command: str) -> str:
@@ -23,15 +42,24 @@ def execute_bash_command(command: str) -> str:
 
     spinner.stop()
     print("Using bash command: ")
-    result = subprocess.run(command, cwd="/home/ferdinand", shell=True, capture_output=True, text=True)
     try:
-        print_formatted_text(HTML(f'<violet>{str(command)}</violet>'))
-        print_formatted_text(HTML(f'<seagreen>{str(result.stdout.strip())}</seagreen>'))
-    except:
-        print('Printing command output was aborted. Command was executed')
+        result = subprocess.run(command, check=True, cwd="/home/ferdinand", shell=True, capture_output=True, text=True)
+        try:
+            print_formatted_text(HTML(f'<violet>{str(command)}</violet>'))
+            print_formatted_text(HTML(f'<seagreen>{str(result.stdout.strip())}</seagreen>'))
+        except:
+            print(command)
+            print(result.stdout.strip())
 
-    spinner.start()
-    return result.stdout.strip()
+        spinner.start()
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(command)
+        print('error')
+        spinner.start()
+        return e.stderr.strip()
+
+
 
 def get_memory_entry(keyword: str) -> str:
     """Get memory entries by keyword. The tool will return all the memory entries matching the keyword. Use this tool when searching for a solution for problem you already solved.
@@ -83,11 +111,8 @@ list_of_tools = ["execute_bash_command", "get_memory_entry", "enter_memory_entry
 tool_dict = {"execute_bash_command": execute_bash_command, "enter_memory_entry": enter_memory_entry, "get_memory_entry": get_memory_entry}
 messages_memory = [{'role': 'system', 'content': "You are a linux ai-assistant called penguin. You can execute bash commands and use your memory to help the user completiting tasks. ALWAYS provide a final answer WITHOUT tool calls to inform he user baout your results."}]
 messages = []
-custom_style = Style.from_dict({
-    '': 'bg:#2c3e50 fg:#ecf0f1',  # Hintergrund dunkelblau, Text weiß
-    'prompt': 'bg:#2980b9 fg:#ffffff bold',
-})
-session = PromptSession(history=FileHistory(".history"), bottom_toolbar=bottom_toolbar, style=custom_style)
+
+session = PromptSession(history=FileHistory(".history"), bottom_toolbar=bottom_toolbar)
 def run_agent(message, maximal_num_turns):
     global messages_memory
     global messages
@@ -137,7 +162,10 @@ def main():
             print('Exiting penguin.')
             break
         else:
-            typewrite(run_agent(user_input, 30), speed=0.01)
+            try:
+                typewrite(run_agent(user_input, 30), speed=0.01)
+            except:
+                print_formatted_text(HTML(f'<red>An error occurred during the agent loop. Please note that this project is currently in development and if it does not work, DO IT YOURSELF</red>'))
 
 if __name__ == "__main__":
     main()
