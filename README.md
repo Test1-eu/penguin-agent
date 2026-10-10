@@ -20,7 +20,7 @@ Then type ```penguin``` in your terminal
 pip install penguin-agent-package
 ```
 
-![Alt Text]()
+![Alt Text](https://github.com/Test1-eu/penguin-agent/blob/main/ressources/bildschirmaufzeichnung-vom-2026-09-26-23-34-26_q3iOhA72%20(online-video-cutter.com).gif)
 >[!WARNING]
 >This will not install the systemwide  ```penguin``` command. You need to add it manually to PATH.
 
