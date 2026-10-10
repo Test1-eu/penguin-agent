@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 packages = ["src/penguin"]
 [project]
 name = "penguin-agent-package"
-version = "0.1.0"
+version = "0.1.2"
 description = "Simple, minimalistic AI-Agent for Linux that runs on almost every device"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -36,5 +36,5 @@ dependencies = [
   "typing-inspection>=0.4.4",
   "typing_extensions>=4.16.0",
   "wcwidth>=0.9.1",
-  "dotenv>=1.2.4"
+  "dotenv"
 ]
