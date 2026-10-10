@@ -38,4 +38,14 @@ Penguin is a very, very simple tool:
 + Uses memory.json file for managing the agent memory
 
 ## Run it
+Just type:
 
+```
+penguin
+```
+
+## How it works
+The choice of Ollama is due entirely to its good tool-calling integration in python. Tool schemes are converted by the ollama library to JSON and passed to the native function calling of the model.
+
+## Credits
+I heavily used the prompt_toolkit library for the design and the interaction with the tool. Thanks also to the amazing ollama python library that makes it so easy to use LLMs with Python.
