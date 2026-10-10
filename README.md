@@ -8,10 +8,10 @@ Penguin uses (at the moment) the qwen3.5:2b model with Ollama as inference. The 
 
 ## Installing & Quick Start
 ### One-line install command using pipx:
-[pipx](https://github.com/pypa/pipx) is a modern PyPi Installer for CLI applications - like apt but for python. Use it to install the  ```penguin-agent-package``` with a systemwide command  ```penguin``` :
+[pipx](https://github.com/pypa/pipx) is a modern PyPi Installer for CLI applications - like apt but for python. Use it to install the  ```penguin-agent-package``` with a systemwide command  ```penguin-agent-package``` :
 
 ```
-sudo pipx install --global --program-name penguin penguin-agent-package
+sudo pipx install penguin-agent-package
 ```
 
 Then type ```penguin``` in your terminal
