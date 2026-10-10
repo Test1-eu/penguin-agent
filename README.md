@@ -20,6 +20,7 @@ Then type ```penguin``` in your terminal
 pip install penguin-agent-package
 ```
 
+![Alt Text]()
 >[!WARNING]
 >This will not install the systemwide  ```penguin``` command. You need to add it manually to PATH.
 

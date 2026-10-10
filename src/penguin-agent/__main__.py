@@ -1,5 +1,3 @@
-import time
-
 from ollama import Client
 from dotenv import load_dotenv
 from prompt_toolkit import print_formatted_text
@@ -16,23 +14,18 @@ import json
 import datetime
 import os
 
-
 load_dotenv()
-print(os.getenv('OLLAMA_BASE_URL'))
-
-if os.getenv('OLLAMA_BASE_URL') == None:
+print(os.getenv("OLLAMA_BASE_URL"))
+if os.getenv('OLLAMA_BASE_URL') is None:
     print('No OLLAMA_BASE_URL found.')
     baseurl = input('Please enter your ollama base URL: ')
     with open('.env', 'w') as file:
         file.write('OLLAMA_BASE_URL=' + baseurl)
     load_dotenv()
-
 ollamaclient = Client(host=os.getenv('OLLAMA_BASE_URL'))
 
-
-
-
 spinner = animation.Wait('spinner', text='penguin is working')
+
 
 def execute_bash_command(command: str) -> str:
     """Execute bash commands in a linux shell environnemnt. Give command as full string.
@@ -58,8 +51,6 @@ def execute_bash_command(command: str) -> str:
         print('error')
         spinner.start()
         return e.stderr.strip()
-
-
 
 def get_memory_entry(keyword: str) -> str:
     """Get memory entries by keyword. The tool will return all the memory entries matching the keyword. Use this tool when searching for a solution for problem you already solved.
@@ -162,10 +153,7 @@ def main():
             print('Exiting penguin.')
             break
         else:
-            try:
-                typewrite(run_agent(user_input, 30), speed=0.01)
-            except:
-                print_formatted_text(HTML(f'<red>An error occurred during the agent loop. Please note that this project is currently in development and if it does not work, DO IT YOURSELF</red>'))
+            typewrite(run_agent(user_input, 30), speed=0.01)
 
 if __name__ == "__main__":
     main()
