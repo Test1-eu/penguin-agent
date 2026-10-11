@@ -19,7 +19,7 @@ print(os.getenv("OLLAMA_BASE_URL"))
 if os.getenv('OLLAMA_BASE_URL') is None:
     print('No OLLAMA_BASE_URL found.')
     baseurl = input('Please enter your ollama base URL: ')
-    with open('.env', 'w') as file:
+    with open('.env', 'x') as file:
         file.write('OLLAMA_BASE_URL=' + baseurl)
     load_dotenv()
 ollamaclient = Client(host=os.getenv('OLLAMA_BASE_URL'))
@@ -36,7 +36,7 @@ def execute_bash_command(command: str) -> str:
     spinner.stop()
     print("Using bash command: ")
     try:
-        result = subprocess.run(command, check=True, cwd="/home/ferdinand", shell=True, capture_output=True, text=True)
+        result = subprocess.run(command, check=True, cwd=os.environ.get('HOME'), shell=True, capture_output=True, text=True)
         try:
             print_formatted_text(HTML(f'<violet>{str(command)}</violet>'))
             print_formatted_text(HTML(f'<seagreen>{str(result.stdout.strip())}</seagreen>'))
@@ -100,7 +100,7 @@ def bottom_toolbar():
 
 list_of_tools = ["execute_bash_command", "get_memory_entry", "enter_memory_entry"]
 tool_dict = {"execute_bash_command": execute_bash_command, "enter_memory_entry": enter_memory_entry, "get_memory_entry": get_memory_entry}
-messages_memory = [{'role': 'system', 'content': "You are a linux ai-assistant called penguin. You can execute bash commands and use your memory to help the user completiting tasks. ALWAYS provide a final answer WITHOUT tool calls to inform he user baout your results."}]
+messages_memory = [{'role': 'system', 'content': "You are a linux ai-assistant called penguin. Your mission is to help the user with using linux in all possible ways. You can execute bash commands and use your memory to help the user completing tasks. ALWAYS provide a final answer WITHOUT tool calls to inform he user about your results. Ask the user before installing packages. Speak in a funny, penguin way. Do not insert role-play style comments in your output"}]
 messages = []
 
 session = PromptSession(history=FileHistory(".history"), bottom_toolbar=bottom_toolbar)
@@ -112,7 +112,7 @@ def run_agent(message, maximal_num_turns):
     messages = messages_memory
     spinner.start()
     for turn_number in range(maximal_num_turns):
-        response = ollamaclient.chat(model="qwen3.5:2b_context", messages=messages, tools=[execute_bash_command, get_memory_entry, enter_memory_entry])
+        response = ollamaclient.chat(model="qwen3.5:2b", messages=messages, tools=[execute_bash_command, get_memory_entry, enter_memory_entry])
 
         message_out = response["message"]
 
@@ -144,7 +144,7 @@ style = Style.from_dict(
 )
 
 
-def main():
+def penguin():
     os.system('cls' if os.name == 'nt' else 'clear')
     completer = WordCompleter(['/exit'], ignore_case=True)
     while True:
@@ -156,4 +156,4 @@ def main():
             typewrite(run_agent(user_input, 30), speed=0.01)
 
 if __name__ == "__main__":
-    main()
+    penguin()
